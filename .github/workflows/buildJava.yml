@@ -1,0 +1,37 @@
+name: CI Java avec Maven Tester et packager
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Vérifier le dépôt (se placer dans le dépôt courant)
+        uses: actions/checkout@v4
+
+
+      - name: Configurer Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: Construire avec Maven
+        run: mvn -B package
+
+
+
+
+
+
+
+
+
+
+
+
+
