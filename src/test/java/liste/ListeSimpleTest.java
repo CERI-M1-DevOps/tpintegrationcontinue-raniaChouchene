@@ -91,7 +91,7 @@ class ListeSimpleTest {
     }
 
     @Test
-     void supprimePremierEnPositionQuelconque() {
+    void supprimePremierEnPositionQuelconque() {
         listeATester.ajout(1);
         listeATester.ajout(2);
         listeATester.ajout(3);
@@ -100,6 +100,7 @@ class ListeSimpleTest {
         assertEquals("ListeSimple(Noeud(2), Noeud(1))", listeATester.toString());
         assertEquals(3, listeATester.getSize());
     }
+
 
     @Test
     void supprimePremierEnDernierePosition() {
