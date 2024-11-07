@@ -61,7 +61,7 @@
                 <version>3.5.0</version>
          <configuration>
                     <argLine>${argLine}</argLine>
-                </configuration>
+         </configuration>
             </plugin>
         </plugins>
     </build>
