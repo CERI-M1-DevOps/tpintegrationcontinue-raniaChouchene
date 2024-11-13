@@ -12,10 +12,10 @@ jobs:
       - name: se placer dans le depot courant
         uses: actions/checkout@v4
 
-      - name: Choisir java 21 et corretto
+      - name: Choisir java 17 et corretto
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'corretto'
 
       - name: mise en cache package maven
