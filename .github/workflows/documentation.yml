@@ -2,8 +2,8 @@ name: Generate and Deploy JavaDoc
 
 on:
   pull_request:
+    branches: [ main ]
     types: [closed]
-
 
 jobs:
   build:
@@ -11,16 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: se placer dans le depot courant
+      - name: Checkout the current repository
         uses: actions/checkout@v4
 
-      - name: Choisir java 21 et corretto
+      - name: Set up Java 21 with Corretto
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'corretto'
 
-      - name: mise en cache package maven
+      - name: Cache Maven packages
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
@@ -28,11 +28,45 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Generation de la JavaDoc
+      - name: Generate JavaDoc
         run: mvn -B javadoc:javadoc
 
-      - name: Deploiment de la  JavaDoc
+      - name: Deploy JavaDoc
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/site/apidocs
+
+  test-and-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the current repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21 with Corretto
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-sonar-
+
+      - name: Build and analyze with Maven and SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=$(echo ${{ github.repository }} | sed 's-/-_-')
