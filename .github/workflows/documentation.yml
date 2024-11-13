@@ -1,74 +1,30 @@
-name: Generate and Deploy JavaDoc
+name: Generate and Deploy Documentation
 
 on:
   pull_request:
-    branches: [ main ]
     types: [closed]
 permissions:
   contents: write
 
 jobs:
-  build:
+  generate-doc:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout the current repository java17
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java 21 with Corretto
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'corretto'
 
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Generate JavaDoc
+      - name: Generate Javadoc
         run: mvn -B javadoc:javadoc
 
-      - name: Deploy JavaDoc
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/site/apidocs
-
-  test-and-package:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout the current repository
-        uses: actions/checkout@v4
-
-      - name: Set up Java 21 with Corretto
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'corretto'
-
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-sonar-
-
-      - name: Build and analyze with Maven and SonarQube
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=$(echo ${{ github.repository }} | sed 's-/-_-')
+          publish_dir: ./target/reports/apidocs
