@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [ main ]
     types: [closed]
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -14,10 +16,10 @@ jobs:
       - name: Checkout the current repository java17
         uses: actions/checkout@v4
 
-      - name: Set up Java 17 with Corretto
+      - name: Set up Java 21 with Corretto
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'corretto'
 
       - name: Cache Maven packages
