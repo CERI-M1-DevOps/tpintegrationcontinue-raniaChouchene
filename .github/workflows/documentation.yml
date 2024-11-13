@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the current repository
+      - name: Checkout the current repository java17
         uses: actions/checkout@v4
 
       - name: Set up Java 17 with Corretto
