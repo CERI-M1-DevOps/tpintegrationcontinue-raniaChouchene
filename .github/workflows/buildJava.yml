@@ -1,27 +1,24 @@
-name: CI Java avec Maven Tester et packager
+name: Java CI with Maven - Test and package
 
 on:
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Vérifier le dépôt (se placer dans le dépôt courant)
+      - name: se placer dans le depot courant
         uses: actions/checkout@v4
 
-
-      - name: Configurer Java
+      - name: Choisir java 17 et corretto
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'corretto'
 
-
-      - name: Cache Maven dependencies
+      - name: mise en cache package maven
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
@@ -29,18 +26,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: mise en cache package SonarQube
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-sonar-
 
-
-      - name: Construire avec Maven
-        env :
-          SONAR_TOKEN : ${{ secrets.SONAR_TOKEN }}
+      - name: construction package maven
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=$(echo ${{ github.repository }} | sed 's-/-_-')
-
-
-
-
-
-
-
-
-
