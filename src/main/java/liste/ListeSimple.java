@@ -3,15 +3,26 @@ package liste;
 public class ListeSimple {
     private long size;
     Noeud tete;
-
+    /**
+     * Retourne la taille de la liste
+     * @return la taille de la liste
+     */
     public long getSize() {
         return size;
     }
-
+    /**
+     * Ajoute un élément à la liste
+     * @param element l'élément à ajouter
+     */
     public void ajout(int element) {
         tete = new Noeud(element, tete);
         size++;
     }
+    /**
+     * Modifie le premier élément trouvé dans la liste
+     * @param element l'élément à remplacer
+     * @param nouvelleValeur la nouvelle valeur de l'élément
+     */
 
     public void modifiePremier(Object element, Object nouvelleValeur) {
         Noeud courant = tete;
@@ -20,7 +31,11 @@ public class ListeSimple {
         if (courant != null)
             courant.setElement(nouvelleValeur);
     }
-
+    /**
+     * Modifie tous les éléments trouvés dans la liste
+     * @param element l'élément à remplacer
+     * @param nouvelleValeur la nouvelle valeur des éléments
+     */
     public void modifieTous(Object element, Object nouvelleValeur) {
         Noeud courant = tete;
         while (courant != null) {
@@ -29,7 +44,13 @@ public class ListeSimple {
             courant = courant.getSuivant();
         }
     }
-
+    /**
+     * Returns a string representation of the linked list.
+     * The format is: ListeSimple(element1, element2, ...).
+     * Each element in the list is separated by a comma.
+     *
+     * @return A string that represents the elements of the linked list in order.
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder("ListeSimple(");
         Noeud n = tete;
